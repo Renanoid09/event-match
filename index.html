@@ -1742,6 +1742,23 @@
       return out;
     }
 
+    // Runs assignBalancedRoles separately per team, so each team gets its
+    // own full set of guaranteed roles (e.g. a 5-player team gets all four
+    // roles plus one duplicate) instead of the guarantee being spread
+    // across the whole room. `teamGroups` is an array of arrays of player
+    // indices (one sub-array per team); the returned array is indexed the
+    // same way the original `players` array was.
+    function assignBalancedRolesByTeam(subMode, teamGroups) {
+      const out = [];
+      teamGroups.forEach(indices => {
+        const teamAssignments = assignBalancedRoles(subMode, indices.length);
+        indices.forEach((playerIndex, i) => {
+          out[playerIndex] = teamAssignments[i];
+        });
+      });
+      return out;
+    }
+
     // Splits players into two teams as evenly as possible (5/5 for a full
     // 10-player room) and randomly decides which team is Attacker vs Defender.
     function assignBalancedSides(players) {
@@ -1792,7 +1809,22 @@
         if (config.role.mode === "manual") {
           roleAssignments = players.map(p => (config.role.manualValues && config.role.manualValues[p.id]) || pick(pool));
         } else if ((config.role.randomMode || "balanced") === "balanced") {
-          roleAssignments = assignBalancedRoles(config.role.subMode, players.length);
+          // When sides are in play, balance roles within each team
+          // separately (so every team gets its own full set of roles,
+          // e.g. all four roles plus one duplicate on a 5-player team)
+          // rather than spreading the room-wide guarantee unevenly across
+          // teams. Falls back to a single room-wide balance when side is
+          // "off" and there's no team split to balance against.
+          const teamGroups = {};
+          let hasTeams = false;
+          sideAssignments.forEach((side, i) => {
+            if (side == null) return;
+            hasTeams = true;
+            (teamGroups[side] = teamGroups[side] || []).push(i);
+          });
+          roleAssignments = hasTeams
+            ? assignBalancedRolesByTeam(config.role.subMode, Object.values(teamGroups))
+            : assignBalancedRoles(config.role.subMode, players.length);
         } else {
           roleAssignments = assignDistinct(pool, players.length);
         }
