@@ -667,158 +667,90 @@
       background: var(--panel);
     }
 
-    /* ---- per-player manual assignment: drag-and-drop ---- */
+    /* ---- per-player manual assignment: player tabs + option grid ----
+       All players are shown as tabs up front (no scrolling to find one);
+       picking a tab reveals that player's category options below, always
+       in the same spot, so assigning several players in a row never
+       requires hunting back down a long list. */
     .manual-dnd-hint {
       font-size: 12px;
       color: var(--paper-dim);
-      margin: 0 0 8px;
+      margin: 0 0 10px;
     }
 
-    .manual-dnd-area {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 320px;
-      overflow-y: auto;
-      padding-right: 2px;
-      border: 1px dashed var(--line);
-      padding: 10px;
-    }
-
-    .manual-dnd-area.drag-over {
-      border-color: var(--red);
-      background: var(--red-dim);
-    }
-
-    .manual-options-pool {
+    .manual-player-tabs {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
     }
 
-    .option-chip {
-      display: inline-flex;
+    .manual-player-tab {
+      display: flex;
       align-items: center;
       gap: 6px;
       background: var(--panel-raised);
       border: 1px solid var(--line);
-      color: var(--paper);
+      color: var(--paper-dim);
       font-family: 'Rajdhani', sans-serif;
       font-size: 13px;
       font-weight: 600;
-      padding: 6px 10px;
-      cursor: grab;
-      user-select: none;
-      touch-action: none;
+      padding: 7px 11px;
+      cursor: pointer;
     }
 
-    .option-chip:hover {
+    .manual-player-tab:hover {
       border-color: var(--paper-dim);
     }
 
-    .option-chip.selected {
+    .manual-player-tab.active {
       border-color: var(--red);
-      color: var(--red);
+      color: var(--paper);
       background: var(--red-dim);
     }
 
-    .option-chip.dragging {
-      opacity: 0.4;
-    }
-
-    .pool-group-label {
-      flex: 0 0 100%;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      color: var(--paper-dim);
-      margin: 6px 0 0;
-    }
-
-    .pool-group-label:first-child {
-      margin-top: 0;
-    }
-
-    .manual-player-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .manual-player-row {
-      border: 1px dashed var(--line);
-      padding: 8px;
-    }
-
-    .manual-player-row .mpr-name {
-      display: block;
-      font-size: 13px;
-      color: var(--paper-dim);
+    .manual-player-tab .mpt-name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      margin-bottom: 6px;
+      max-width: 120px;
     }
 
-    .mpr-slots {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+    .manual-player-tab .mpt-progress {
+      font-size: 11px;
+      color: var(--paper-dim);
     }
 
-    .manual-drop-zone {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex: 1 1 140px;
-      border: 1px dashed var(--line);
-      padding: 6px 8px;
-      cursor: pointer;
+    .manual-player-tab.complete .mpt-progress {
+      color: var(--teal);
     }
 
-    .manual-drop-zone.filled {
-      border-style: solid;
-      background: var(--panel-raised);
+    .manual-player-tab.active .mpt-progress {
+      color: inherit;
     }
 
-    .manual-drop-zone.drag-over {
-      border-color: var(--red);
-      background: var(--red-dim);
+    .manual-assign-section {
+      margin-bottom: 14px;
     }
 
-    .manual-drop-zone .mpr-cat-label {
+    .manual-assign-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .manual-assign-label {
       font-size: 11px;
       letter-spacing: 0.5px;
       text-transform: uppercase;
       color: var(--paper-dim);
+      margin-bottom: 6px;
     }
 
-    .manual-drop-zone .mpr-value {
+    .manual-assign-options {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       gap: 6px;
-      flex: 1;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--paper-dim);
-    }
-
-    .manual-drop-zone.filled .mpr-value {
-      color: var(--paper);
-    }
-
-    .manual-drop-zone .mpr-clear {
-      background: none;
-      border: none;
-      color: var(--paper-dim);
-      font-size: 16px;
-      line-height: 1;
-      padding: 2px 4px;
-      cursor: pointer;
-    }
-
-    .manual-drop-zone .mpr-clear:hover {
-      color: var(--red);
     }
 
     /* ---- map manual selection: clickable tiles ---- */
@@ -1075,7 +1007,7 @@
         manualPerPlayer: "Manual — set per player",
         anyAgentInRole: "Any agent in this role",
         anyWeaponOfType: "Any weapon of this type",
-        dragHint: "Drag an option onto a player, or tap one then tap a player.",
+        dragHint: "Pick a player tab, then tap an option to assign it. Tap it again to clear.",
         dropHere: "Drop here",
         clearAssignment: "Clear",
         manualAssignments: "Manual assignments",
@@ -1148,7 +1080,7 @@
         manualPerPlayer: "手動 — プレイヤーごとに設定",
         anyAgentInRole: "任意のエージェント",
         anyWeaponOfType: "この種類の任意の武器",
-        dragHint: "オプションをプレイヤーにドラッグするか、タップしてからプレイヤーをタップしてください。",
+        dragHint: "プレイヤーのタブを選び、割り当てたいオプションをタップしてください。もう一度タップすると解除されます。",
         dropHere: "ここにドロップ",
         clearAssignment: "クリア",
         manualAssignments: "手動割り当て",
@@ -1221,7 +1153,7 @@
         manualPerPlayer: "수동 — 플레이어별로 설정",
         anyAgentInRole: "이 역할의 임의 요원",
         anyWeaponOfType: "이 종류의 임의 무기",
-        dragHint: "옵션을 플레이어 위로 드래그하거나, 탭한 뒤 플레이어를 탭하세요.",
+        dragHint: "플레이어 탭을 선택한 뒤 배정할 옵션을 탭하세요. 다시 탭하면 해제됩니다.",
         dropHere: "여기에 놓기",
         clearAssignment: "지우기",
         manualAssignments: "수동 배정",
@@ -1372,7 +1304,7 @@
       lang: detectSavedLang(),
       busy: false,        // true while a create/join request is in flight, to block spam-clicks
       lastHeartbeatWrite: null,  // timestamp of the last heartbeat write, so a fresh rejoin doesn't immediately re-fire one
-      selectedChip: null  // { category, value } — an option "picked up" via tap, waiting for a player tap to land on
+      manualActivePlayerId: null  // which player's tab is open in the manual-assignment panel
     };
 
     function setLang(lang) {
@@ -2111,11 +2043,13 @@
   `;
     }
 
-    // Single unified drag-and-drop area covering every per-player category
-    // currently set to Manual (side / role / weapon). Instead of a separate
-    // pool + drop zone per category, all manual options live in one pool
-    // (grouped by category) and each player gets one row with one slot per
-    // active category — so everything is dragged into the same place.
+    // Manual assignment panel for every per-player category currently set
+    // to Manual (side / role / weapon). Rather than one long list of
+    // players to drag options onto — which meant scrolling back and forth
+    // to find the right row — every player gets a tab up top, all visible
+    // at once. Selecting a tab shows that player's option grid in the same
+    // fixed spot below, so assigning a whole roster is just tab, tap,
+    // tab, tap, with nothing to scroll to find.
     function manualAssignmentPanel(cfg, players) {
       const PER_PLAYER_CATEGORIES = [
         { category: "side", subMode: null },
@@ -2123,48 +2057,55 @@
         { category: "weapon", subMode: cfg.weapon.subMode }
       ];
       const active = PER_PLAYER_CATEGORIES.filter(c => cfg[c.category].mode === "manual");
-      if (!active.length) return "";
+      if (!active.length || !players.length) return "";
 
-      const sel = local.selectedChip;
+      // Keep the active tab valid (falls back to the first player if none
+      // picked yet, or if the previously active player left the room).
+      if (!local.manualActivePlayerId || !players.some(p => p.id === local.manualActivePlayerId)) {
+        local.manualActivePlayerId = players[0].id;
+      }
+      const activePlayerId = local.manualActivePlayerId;
 
-      const poolHtml = active.map(({ category, subMode }) => {
-        const options = categoryOptionsFor(category, subMode);
+      const tabsHtml = players.map(p => {
+        const doneCount = active.filter(({ category }) => (cfg[category].manualValues || {})[p.id]).length;
+        const complete = doneCount === active.length;
         return `
-          <div class="pool-group-label">${t(category)}</div>
-          ${options.map(o => `
-            <div class="option-chip ${sel && sel.category === category && sel.value === o ? "selected" : ""}"
-                 draggable="true"
-                 data-option-chip="${category}"
-                 data-option-value="${escapeHtml(o)}">${optionIcon(category, subMode, o)}<span class="chip-label">${escapeHtml(translateOption(category, subMode, o))}</span></div>
-          `).join("")}
+          <button type="button"
+                  class="manual-player-tab ${p.id === activePlayerId ? "active" : ""} ${complete ? "complete" : ""}"
+                  data-manual-tab="${p.id}">
+            <span class="mpt-name">${escapeHtml(p.nickname)}</span>
+            <span class="mpt-progress">${doneCount}/${active.length}</span>
+          </button>
         `;
       }).join("");
 
-      const rowsHtml = players.map(p => `
-        <div class="manual-player-row">
-          <span class="mpr-name">${escapeHtml(p.nickname)}</span>
-          <div class="mpr-slots">
-            ${active.map(({ category, subMode }) => {
-        const assigned = (cfg[category].manualValues || {})[p.id];
+      const sectionsHtml = active.map(({ category, subMode }) => {
+        const options = categoryOptionsFor(category, subMode);
+        const assigned = (cfg[category].manualValues || {})[activePlayerId];
         return `
-                <div class="manual-drop-zone ${assigned ? "filled" : ""}" data-manual-drop="${category}" data-player-id="${p.id}">
-                  <span class="mpr-cat-label">${t(category)}</span>
-                  <span class="mpr-value">${assigned ? optionIcon(category, subMode, assigned) + `<span>${escapeHtml(translateOption(category, subMode, assigned))}</span>` : `<span>${t('dropHere')}</span>`}</span>
-                  ${assigned ? `<button type="button" class="mpr-clear" data-manual-clear="${category}" data-player-id="${p.id}" aria-label="${t('clearAssignment')}">×</button>` : ""}
-                </div>
-              `;
-      }).join("")}
+          <div class="manual-assign-section">
+            <div class="manual-assign-label">${t(category)}</div>
+            <div class="manual-assign-options">
+              ${options.map(o => `
+                <button type="button"
+                        class="map-tile ${assigned === o ? "selected" : ""}"
+                        data-manual-option="${category}"
+                        data-option-value="${escapeHtml(o)}">
+                  ${optionIcon(category, subMode, o)}<span class="chip-label">${escapeHtml(translateOption(category, subMode, o))}</span>
+                </button>
+              `).join("")}
+            </div>
           </div>
-        </div>
-      `).join("");
+        `;
+      }).join("");
 
       return `
         <div class="panel" style="--accent:var(--teal); margin-top:16px;">
           <h3 style="margin-bottom:6px;">${t('manualAssignments')}</h3>
           <p class="manual-dnd-hint">${t('dragHint')}</p>
-          <div class="manual-dnd-area">
-            <div class="manual-options-pool">${poolHtml}</div>
-            <div class="manual-player-list">${rowsHtml}</div>
+          <div class="manual-player-tabs">${tabsHtml}</div>
+          <div class="manual-assign-panel" data-manual-player="${activePlayerId}">
+            ${sectionsHtml}
           </div>
         </div>
       `;
@@ -2287,70 +2228,32 @@
           });
         });
       });
-      bindManualDnd();
+      bindManualAssign();
       const randomizeBtn = document.getElementById("randomizeBtn");
       if (randomizeBtn) randomizeBtn.addEventListener("click", doRandomize);
     }
 
-    // Manual per-player assignment: an option "chip" can either be dragged
-    // onto a player's drop zone (desktop mouse/pen), or tapped once to
-    // select it and then landed by tapping a player (works everywhere,
-    // including touch, where native HTML5 drag-and-drop is unreliable).
-    function bindManualDnd() {
-      document.querySelectorAll("[data-option-chip]").forEach(chip => {
-        const category = chip.dataset.optionChip;
-        const value = chip.dataset.optionValue;
-
-        chip.addEventListener("dragstart", e => {
-          e.dataTransfer.effectAllowed = "copy";
-          e.dataTransfer.setData("text/plain", JSON.stringify({ category, value }));
-          chip.classList.add("dragging");
-        });
-        chip.addEventListener("dragend", () => chip.classList.remove("dragging"));
-
-        chip.addEventListener("click", () => {
-          const sel = local.selectedChip;
-          // Tapping the already-selected chip again deselects it.
-          local.selectedChip = (sel && sel.category === category && sel.value === value)
-            ? null
-            : { category, value };
+    // Manual per-player assignment: tapping a player tab switches which
+    // player the option grid below applies to; tapping an option assigns
+    // it to whichever player's tab is currently active, and tapping an
+    // already-assigned option again clears it.
+    function bindManualAssign() {
+      document.querySelectorAll("[data-manual-tab]").forEach(tab => {
+        tab.addEventListener("click", () => {
+          local.manualActivePlayerId = tab.dataset.manualTab;
           render();
         });
       });
 
-      document.querySelectorAll("[data-manual-drop]").forEach(zone => {
-        const category = zone.dataset.manualDrop;
-        const playerId = zone.dataset.playerId;
-
-        zone.addEventListener("dragover", e => {
-          e.preventDefault();
-          e.dataTransfer.dropEffect = "copy";
-          zone.classList.add("drag-over");
-        });
-        zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
-        zone.addEventListener("drop", e => {
-          e.preventDefault();
-          zone.classList.remove("drag-over");
-          let payload;
-          try { payload = JSON.parse(e.dataTransfer.getData("text/plain")); } catch (err) { return; }
-          if (!payload || payload.category !== category) return;
-          updateConfigManualValue(category, playerId, payload.value);
-        });
-
-        zone.addEventListener("click", () => {
-          const sel = local.selectedChip;
-          if (!sel || sel.category !== category) return;
-          updateConfigManualValue(category, playerId, sel.value);
-          local.selectedChip = null;
-        });
-      });
-
-      document.querySelectorAll("[data-manual-clear]").forEach(btn => {
-        const category = btn.dataset.manualClear;
-        const playerId = btn.dataset.playerId;
-        btn.addEventListener("click", e => {
-          e.stopPropagation(); // don't let the click bubble to the drop zone's own handler
-          updateConfigManualValue(category, playerId, "");
+      document.querySelectorAll("[data-manual-option]").forEach(btn => {
+        const category = btn.dataset.manualOption;
+        const value = btn.dataset.optionValue;
+        btn.addEventListener("click", () => {
+          const playerId = local.manualActivePlayerId;
+          if (!playerId) return;
+          const catCfg = local.room.config[category];
+          const current = (catCfg.manualValues || {})[playerId];
+          updateConfigManualValue(category, playerId, current === value ? "" : value);
         });
       });
     }
